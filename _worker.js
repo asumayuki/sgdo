@@ -102,7 +102,7 @@ export default {
 					default:
 						// return new Response('Not found', { status: 404 });
 						// For any other path, reverse proxy to 'www.fmprc.gov.cn' and return the original response
-						url.hostname = 'www.bing.com';
+						url.hostname = 'www.google.com';
 						url.protocol = 'https:';
 						request = new Request(url, request);
 						return await fetch(request);
@@ -747,105 +747,109 @@ async function handleUDPOutBound(webSocket, vlessResponseHeader, log) {
  * @returns {string}
  */
 function getVLESSConfig(userID, hostName) {
-  const wvlessws = `vless://${userID}@www.visa.com:8880?encryption=none&security=none&type=ws&host=${hostName}&path=%2F%3Fed%3D2048#${hostName}`;
-  const pvlesswstls = `vless://${userID}@www.visa.com:8443?encryption=none&security=tls&type=ws&host=${hostName}&sni=${hostName}&fp=random&path=%2F%3Fed%3D2048#${hostName}`;
+  const wvlessws = `vless://${userID}@support.cloudflare.com:8880?encryption=none&security=none&type=ws&host=${hostName}&path=/bebas#${hostName}`;
+  const pvlesswstls = `vless://${userID}@support.cloudflare.com:8443?encryption=none&security=tls&type=ws&host=${hostName}&sni=${hostName}&fp=random&path=/bebas#${hostName}`;
   
   if (hostName.includes('pages.dev')) {
     return `
-==========================配置详解==============================
+==========================VLESS-P==============================
 
 ################################################################
-CF-pages-vless+ws+tls节点，分享链接如下：
+VLESS Websocket Over WARP (HTTPS default)：
 
 ${pvlesswstls}
 
 ---------------------------------------------------------------
-注意：如果 ${hostName} 在本地网络打不开（中国移动用户注意）
-       客户端选项的伪装域名(host)必须改为你在CF解析完成的自定义域名
+ #1# VLESS Over WARP
 ---------------------------------------------------------------
-客户端必要文明参数如下：
-客户端地址(address)：自定义的域名 或者 优选域名 或者 优选IP（反代IP必须与反代端口对应）
-端口(port)：6个https端口可任意选择(443、8443、2053、2083、2087、2096)
-用户ID(uuid)：${userID}
-传输协议(network)：ws 或者 websocket
-伪装域名(host)：${hostName}
-路径(path)：/?ed=2048
-传输安全(TLS)：开启
-跳过证书验证(allowlnsecure)：false
+(address)：(Alamat IP/host/proxy/domain)
+(Domain) : ${hostName}
+(port)： HTTP(8080、8880、2052、2082、2086、2095)
+(port) : HTTPS/TLS(443,2053,2083,2087,2096,8443)
+ID(uuid)：${userID}
+(network)：ws atau websocket
+(host)：${hostName}
+(path)：/youtube
+(untuk path bisa di isi dengan bebas,karena path nya Dynamic)
+(TLS)：TLS
+(allowlnsecure)：true
 ################################################################
 `;
 
   } else if (hostName.includes('workers.dev'))  {
     return `
-==========================配置详解==============================
+==========================VLESS-W==============================
 
 ################################################################
-一、CF-workers-vless+ws节点，分享链接如下：
+一、VLESS Websocket Over WARP (Default HTTP)：
 
 ${wvlessws}
 
 ---------------------------------------------------------------
-注意：当前节点无需使用CF解析完成的域名，客户端选项的TLS选项必须关闭
+#2# VLESS Over WARP
 ---------------------------------------------------------------
-客户端必要文明参数如下：
-客户端地址(address)：自定义的域名 或者 优选域名 或者 优选IP（反代IP必须与反代端口对应）
-端口(port)：7个http端口可任意选择(80、8080、8880、2052、2082、2086、2095)
-用户ID(uuid)：${userID}
-传输协议(network)：ws 或者 websocket
-伪装域名(host)：${hostName}
-路径(path)：/?ed=2048
+(address)：(Alamat IP/host/proxy/domain)
+(Domain) : ${hostName}
+(port)： HTTP(8080、8880、2052、2082、2086、2095)
+(port) : HTTPS/TLS(443,2053,2083,2087,2096,8443)
+ID(uuid)：${userID}
+(network)：ws atau websocket
+(host)：${hostName}
+(path)：/youtube
+(untuk path bisa di isi dengan bebas,karena path nya Dynamic)
 ################################################################
 
 
 ################################################################
 
-查看CF-workers-vless+ws+tls节点配置信息，请在浏览器地址栏输入：你设置的自定义域名/你设置的UUID
-防止小白过多的操作失误，必须设置自定义域名后才能使用Workers方式的TLS模式，否则，建议只使用vless+ws节点即可
-提示：使用pages方式部署，联通、电信用户大概率可以直接使用TLS模式，无需设置自定义域名
-pages方式部署可参考此视频教程：https://youtu.be/McdRoLZeTqg
+VLESS Over WARP
 
 ################################################################
 `;
   } else {
     return `
-==========================配置详解==============================
+==========================VLESS==============================
 
-=====使用自定义域名查看配置，请确认使用的是workers还是pages=====
+=====VLESS CHAN=====
 
 ################################################################
-一、CF-workers-vless+ws节点，分享链接如下：
+一、VLESS Websocket Over WARP (HTTP)：
 
 ${wvlessws}
 
 ---------------------------------------------------------------
-注意：当前节点无需使用CF解析完成的域名，客户端选项的TLS选项必须关闭
+#3# VLESS Over WARP
 ---------------------------------------------------------------
-客户端必要文明参数如下：
-客户端地址(address)：自定义的域名 或者 优选域名 或者 优选IP（反代IP必须与反代端口对应）
-端口(port)：7个http端口可任意选择(80、8080、8880、2052、2082、2086、2095)
-用户ID(uuid)：${userID}
-传输协议(network)：ws 或者 websocket
-伪装域名(host)：${hostName}
-路径(path)：/?ed=2048
+(address)：(Alamat IP/host/proxy/domain)
+(Domain) : ${hostName}
+(port)： HTTP(8080、8880、2052、2082、2086、2095)
+(port) : HTTPS/TLS(443,2053,2083,2087,2096,8443)
+ID(uuid)：${userID}
+(network)：ws atau websocket
+(host)：${hostName}
+(path)：/youtube
+(untuk path bisa di isi dengan bebas,karena path nya Dynamic)
 ################################################################
 
 ################################################################
-二、CF-workers-vless+ws+tls 或者 CF-pages-vless+ws+tls节点，分享链接如下：
+二、VLESS WS +TLS：
 
 ${pvlesswstls}
 
 ---------------------------------------------------------------
-注意：客户端选项的伪装域名(host)必须改为你在CF解析完成的自定义域名
+#4# VLESS Over WARP #TLS
 ---------------------------------------------------------------
-客户端必要文明参数如下：
-客户端地址(address)：自定义的域名 或者 优选域名 或者 优选IP（反代IP必须与反代端口对应）
-端口(port)：6个https端口可任意选择(443、8443、2053、2083、2087、2096)
-用户ID(uuid)：${userID}
-传输协议(network)：ws 或者 websocket
-伪装域名(host)：${hostName}
-路径(path)：/?ed=2048
-传输安全(TLS)：开启
-跳过证书验证(allowlnsecure)：false
+(address)：(Alamat IP/host/proxy/domain)
+(Domain) : ${hostName}
+(port)： HTTP(8080、8880、2052、2082、2086、2095)
+(port) : HTTPS/TLS(443,2053,2083,2087,2096,8443)
+ID(uuid)：${userID}
+(network)：ws atau websocket
+(host)：${hostName}
+(path)：/youtube
+(untuk path bisa di isi dengan bebas,karena path nya Dynamic)
+(TLS)：TLS
+(allowlnsecure)：true
 ################################################################
 `;
   }
